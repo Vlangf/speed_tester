@@ -3,12 +3,11 @@ from time import sleep
 
 
 class SpeedChecker(object):
-    start_time = ''
-    end_time = ''
-    dict_time = {}
 
-    @classmethod
-    def with_time_limit(cls, page, proxy, driver, server):
+    def with_time_limit(self, page, proxy, driver, server):
+        start_time = ''
+        end_time = ''
+        dict_time = {}
         try:
             proxy.new_har(page)
             driver.get(page)
@@ -17,23 +16,35 @@ class SpeedChecker(object):
             entries = requests['log']['entries']
 
             for each in entries:
-                cls.dict_time[each['startedDateTime']] = each['time']
+                dict_time[each['startedDateTime']] = each['time']
 
-            for each in cls.dict_time.keys():
+            for each in dict_time.keys():
 
-                if cls.start_time == '' or cls.start_time > datetime.fromisoformat(each):
-                    cls.start_time = datetime.fromisoformat(each)
+                if start_time == '' or start_time > datetime.fromisoformat(each):
+                    start_time = datetime.fromisoformat(each)
 
-                milli = cls.dict_time[each]
-                if cls.end_time == '' or cls.end_time < datetime.fromisoformat(each) + timedelta(milliseconds=milli):
-                    cls.end_time = datetime.fromisoformat(each) + timedelta(milliseconds=milli)
+                milli = dict_time[each]
+                if end_time == '' or end_time < datetime.fromisoformat(each) + timedelta(milliseconds=milli):
+                    end_time = datetime.fromisoformat(each) + timedelta(milliseconds=milli)
 
-            time_load = cls.end_time - cls.start_time
+            time_load = end_time - start_time
             server.stop()
             driver.quit()
             return str(time_load)
 
         except:
-            proxy.close()
+            server.stop()
+            driver.quit()
+            return "Ошибочка. Проверь URL, должно начинаться с http:// or https://"
+
+    def with_loadEventEnd(self, page, driver):
+        try:
+            driver.get(page)
+            time = driver.execute_script(
+                "return ( window.performance.timing.loadEventEnd - window.performance.timing.navigationStart )")
+
+            return str(time)
+
+        except:
             driver.quit()
             return "Ошибочка. Проверь URL, должно начинаться с http:// or https://"
