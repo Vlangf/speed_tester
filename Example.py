@@ -24,7 +24,15 @@ def test_urls_opening_speed():
 
     for each in urls:
         server, proxy, driver = set_proxy_and_driver()
-        time = SpeedChecker.with_time_limit(each, proxy, driver, server)
+        time = SpeedChecker().with_time_limit(each, proxy, driver, server)
+        url = each
+        result_dict[url] = time
+
+    print(result_dict)
+
+    for each in urls:
+        server, proxy, driver = set_proxy_and_driver()
+        time = SpeedChecker().with_loadEventEnd(each, driver)
         url = each
         result_dict[url] = time
 
