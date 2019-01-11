@@ -40,8 +40,8 @@ class SpeedChecker(object):
     def with_loadEventEnd(self, page, driver):
         try:
             driver.get(page)
-            time = driver.execute_script(
-                "return ( window.performance.timing.loadEventEnd - window.performance.timing.navigationStart )")
+            time = timedelta(milliseconds=driver.execute_script(
+                "return ( window.performance.timing.loadEventEnd - window.performance.timing.navigationStart )"))
 
             return str(time)
 
