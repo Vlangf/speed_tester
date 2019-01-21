@@ -5,7 +5,7 @@ import json
 
 
 def set_proxy_and_driver():
-    server = Server("/Users/v.gorbachev/PycharmProjects/speed_tester/browsermob-proxy/bin/browsermob-proxy")
+    server = Server("~/browsermob-proxy/bin/browsermob-proxy")
     server.start()
     proxy = server.create_proxy()
 

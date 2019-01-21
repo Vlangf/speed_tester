@@ -4,14 +4,14 @@ from time import sleep
 
 class SpeedChecker(object):
 
-    def with_time_limit(self, page, proxy, driver, server):
+    def with_time_limit(self, page, proxy, driver, server, time=5):
         start_time = ''
         end_time = ''
         dict_time = {}
         try:
             proxy.new_har(page)
             driver.get(page)
-            sleep(5)
+            sleep(time)
             requests = proxy.har
             entries = requests['log']['entries']
 
@@ -32,10 +32,10 @@ class SpeedChecker(object):
             driver.quit()
             return str(time_load)
 
-        except:
+        except:  # TODO add right exceptions
             server.stop()
             driver.quit()
-            return "Ошибочка. Проверь URL, должно начинаться с http:// or https://"
+            return "Error. Check URL. URL must start with http:// or https://"
 
     def with_loadEventEnd(self, page, driver):
         try:
@@ -45,6 +45,6 @@ class SpeedChecker(object):
 
             return str(time)
 
-        except:
+        except:  # TODO add right exceptions
             driver.quit()
-            return "Ошибочка. Проверь URL, должно начинаться с http:// or https://"
+            return "Error. Check URL. URL must start with http:// or https://"
